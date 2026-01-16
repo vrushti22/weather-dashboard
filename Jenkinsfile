@@ -7,12 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/vrushti22/weather-dashboard.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME} ."
