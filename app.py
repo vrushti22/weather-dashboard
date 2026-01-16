@@ -3,10 +3,10 @@ import requests
 import os
 
 app = Flask(__name__)
-API_KEY = os.getenv("WEATHER_API_KEY", "your_api_key_here")  # replace with your OpenWeatherMap API key
+API_KEY = os.getenv("WEATHER_API_KEY", "your_api_key_here")  # use env variable
 
-# Predefined list of cities for dropdown
-CITIES = ["Ahmedabad", "Rajkot", "Baroda", "Mehsana", "Mumbai", "Anand", "Surat"]
+# Predefined cities
+CITIES = ["Ahmedabad", "Rajkot", "Baroda", "Surat", "Mumbai", "Mehsana", "Junagadh"]
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -29,7 +29,7 @@ def home():
             else:
                 weather_data = {"error": "City not found"}
 
-    # Build HTML inline
+    # Inline HTML
     html = """
     <html>
     <head>
@@ -46,21 +46,19 @@ def home():
             <label for="city">Select City:</label>
             <select name="city" id="city">
     """
-
-    # Add options dynamically
+    # Add dropdown options
     for city in CITIES:
         if city == selected_city:
             html += f'<option value="{city}" selected>{city}</option>'
         else:
             html += f'<option value="{city}">{city}</option>'
-
     html += """
             </select>
             <button type="submit">Get Weather</button>
         </form>
     """
 
-    # Show weather info if available
+    # Weather info
     if weather_data:
         html += '<div class="weather">'
         if "error" in weather_data:
@@ -68,4 +66,12 @@ def home():
         else:
             html += f'<p><strong>City:</strong> {weather_data["city"]}</p>'
             html += f'<p><strong>Temperature:</strong> {weather_data["temperature"]} °C</p>'
-            html += f'<p><strong>Humidity
+            html += f'<p><strong>Humidity:</strong> {weather_data["humidity"]}%</p>'
+            html += f'<p><strong>Description:</strong> {weather_data["description"]}</p>'
+        html += "</div>"
+
+    html += "</body></html>"
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
